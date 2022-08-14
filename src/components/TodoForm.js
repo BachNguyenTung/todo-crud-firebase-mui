@@ -51,7 +51,7 @@ const TodoForm = () => {
     name: yup
       .string()
       .min(2, "Todo phải có tối thiểu 2 ký tự")
-      .max(50, "Todo không vượt quá 20 ký tự")
+      .max(30, "Todo không vượt quá 30 ký tự")
       .required("Vui lòng nhập todo"),
   });
 
