@@ -24,8 +24,6 @@ import {
 
 const StyledIconButton = styled(IconButton)(({ theme }) => ({
   border: "none !important",
-  width: "4rem",
-  height: "4rem",
   borderRadius: 0,
   backgroundColor: "white",
   "&:hover": { backgroundColor: theme.palette.primary.light },
@@ -93,10 +91,13 @@ const Todo = ({ item }) => {
       p={1}
       mt={1}
       mb={1}
-      sx={{
+      sx={(theme) => ({
         borderRadius: "5px",
-      }}
-      width="50%"
+        width: "50%",
+        [theme.breakpoints.down("sm")]: {
+          width: "100%",
+        },
+      })}
       display="flex"
       justifyContent="center"
     >

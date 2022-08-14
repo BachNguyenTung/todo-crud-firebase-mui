@@ -6,15 +6,18 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as yup from "yup";
 import { Box, Button, styled, Typography } from "@mui/material";
 
-const StyledForm = styled(Form)({
+const StyledForm = styled(Form)(({ theme }) => ({
   width: "40%",
+  [theme.breakpoints.down("sm")]: {
+    width: "100%",
+  },
   padding: "10px 20px",
   backgroundColor: "white",
   borderRadius: "5px",
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
-});
+}));
 
 const StyledField = styled(Field, {
   shouldForwardProp: (props) => props !== "invalid",
