@@ -1,20 +1,10 @@
-import React, { useCallback, useRef } from "react";
+import React from "react";
 import { todoActions } from "../slice/todoSlice";
 import { db } from "../firebase";
 import { useDispatch } from "react-redux";
 import { useState } from "react";
+import { Box, ButtonGroup, IconButton, styled, InputBase } from "@mui/material";
 import {
-  Box,
-  Button,
-  ButtonGroup,
-  IconButton,
-  InputBase,
-  styled,
-  TextField,
-} from "@mui/material";
-import {
-  TaskAlt,
-  Add,
   Delete,
   Edit,
   Done,
@@ -28,17 +18,21 @@ const StyledIconButton = styled(IconButton)(({ theme }) => ({
   backgroundColor: "white",
   "&:hover": { backgroundColor: theme.palette.primary.light },
   "&:disabled": { backgroundColor: "gray" },
+  [theme.breakpoints.down("sm")]: {
+    flex: 1,
+  },
 }));
 
 const Todo = ({ item }) => {
+  console.log("todo render");
   const { updateTodo, deleteTodo } = todoActions;
   const [isDisabled, setIsDisabled] = useState(true);
   const dispatch = useDispatch();
+  let cbRef;
 
   const [newName, setNewName] = useState(item.name);
   const handleChange = (e) => {
     e.preventDefault();
-    console.log(e);
     setNewName(e.target.value);
     dispatch(updateTodo({ id: item.id, finished: false })); // set finishedfalse if edit attempts
   };
@@ -76,26 +70,27 @@ const Todo = ({ item }) => {
 
   const handleEdit = () => {
     setIsDisabled(!isDisabled);
+    cbRef.focus();
   };
 
   const callbackRef = (element) => {
-    // cbRef = element;
     if (element) {
-      element.focus();
+      cbRef = element;
     }
   };
 
   return (
     <Box
       bgcolor="white"
-      p={1}
       mt={1}
       mb={1}
       sx={(theme) => ({
+        padding: "10px 20px",
         borderRadius: "5px",
-        width: "50%",
+        width: "60%",
         [theme.breakpoints.down("sm")]: {
           width: "100%",
+          flexDirection: "column",
         },
       })}
       display="flex"
@@ -103,19 +98,21 @@ const Todo = ({ item }) => {
     >
       <InputBase
         inputRef={callbackRef}
-        disabled={isDisabled}
+        // disabled={isDisabled}
+        readOnly={isDisabled}
         name="todo"
         type="text"
         value={newName}
         onChange={handleChange}
         sx={{
-          border: !isDisabled && "1px solid black",
           flex: "1",
           fontSize: "20px",
           textDecoration: item.finished && "line-through",
-          "& .MuiInputBase-input.Mui-disabled": {
-            WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
-          },
+          border: "none",
+          //styled disabled input
+          // "& .MuiInputBase-input.Mui-disabled": {
+          //   WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
+          // },
         }}
       />
       <ButtonGroup

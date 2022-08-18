@@ -4,7 +4,7 @@ import { db } from "../firebase";
 import { useDispatch } from "react-redux";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as yup from "yup";
-import { Box, Button, styled, Typography } from "@mui/material";
+import { Button, styled } from "@mui/material";
 
 const StyledForm = styled(Form)(({ theme }) => ({
   width: "40%",
@@ -95,12 +95,15 @@ const TodoForm = () => {
             <Button
               variant="contained"
               type="submit"
-              sx={{
-                backgroundColor: "primary.light",
+              sx={(theme) => ({
+                [theme.breakpoints.down("sm")]: {
+                  width: "100%",
+                },
+                backgroundColor: "primary.main",
                 borderRadius: "5px",
                 textTransform: "capitalize",
-                "&::hover": { backgroundColor: "primary.main" },
-              }}
+                "&::hover": { backgroundColor: "primary.light" },
+              })}
             >
               Add
             </Button>

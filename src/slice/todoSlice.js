@@ -2,28 +2,21 @@ import { createSlice } from "@reduxjs/toolkit";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { db } from "../firebase";
 
-export const fetchTodo = createAsyncThunk("todos/fetchTodo", async () => {
-  return await new Promise((resolve, reject) => {
-    let todoFetched = false;
-    let todos = [];
-    db.collection("todos")
-      .orderBy("created", "desc")
-      .onSnapshot((querySnapshot) => {
-        todos = querySnapshot.docs.map((doc) => {
-          if (doc.data() !== null) {
-            return { ...doc.data(), id: doc.id };
-          } else return {};
-        });
-        if (!todoFetched) {
-          resolve(todos);
-          todoFetched = true;
-        } else {
-          reject("already fetched");
-          // TODO: Update state with updates received
-        }
+export const fetchTodo = createAsyncThunk("todo/fetchTodo", () => {
+  return db
+    .collection("todos")
+    .orderBy("created", "desc")
+    .get()
+    .then((querySnapshot) => {
+      let todosArray = [];
+      querySnapshot.forEach((doc) => {
+        todosArray.push({ ...doc.data(), id: doc.id });
       });
-  });
+      return todosArray;
+    });
 });
+
+// TODO: createAsyncThunk for create, update, delete, finished
 
 const initialState = {
   loading: false,
@@ -36,7 +29,8 @@ const todoSlice = createSlice({
   initialState,
   reducers: {
     createTodo: (state, action) => {
-      state.items.push(action.payload);
+      state.items = [...state.items, action.payload];
+      // state.items.push(action.payload);
       state.items.sort((a, b) => b.created - a.created);
     },
     updateTodo: (state, action) => {
