@@ -18,7 +18,7 @@ export const fetchTodo = createAsyncThunk("todo/fetchTodo", () => {
 
 export const createTodoThunk = createAsyncThunk(
   "todo/createTodoThunk",
-  async ({ name }) => {
+  async ({ name }, thunkAPI) => {
     let created = Math.floor(new Date().valueOf() / 1000);
     let finished = false;
     const docRef = await db.collection("todos").add({
@@ -31,7 +31,7 @@ export const createTodoThunk = createAsyncThunk(
   }
 );
 
-// TODO: createAsyncThunk for create, update, delete, finished
+// TODO: createAsyncThunk for update, delete, finished
 
 const initialState = {
   loading: false,
