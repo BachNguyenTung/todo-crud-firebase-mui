@@ -16,6 +16,21 @@ export const fetchTodo = createAsyncThunk("todo/fetchTodo", () => {
     });
 });
 
+export const createTodoThunk = createAsyncThunk(
+  "todo/createTodoThunk",
+  async ({ name }) => {
+    let created = Math.floor(new Date().valueOf() / 1000);
+    let finished = false;
+    const docRef = await db.collection("todos").add({
+      name,
+      created,
+      finished,
+    });
+    const result = { id: docRef.id, name, created, finished };
+    return result;
+  }
+);
+
 // TODO: createAsyncThunk for create, update, delete, finished
 
 const initialState = {
@@ -62,6 +77,19 @@ const todoSlice = createSlice({
     [fetchTodo.rejected]: (state, action) => {
       state.loading = false;
       state.items = [];
+      state.error = action.error.message;
+    },
+    [createTodoThunk.pending]: (state, action) => {
+      state.loading = true;
+    },
+    [createTodoThunk.fulfilled]: (state, action) => {
+      state.loading = false;
+      state.items = [...state.items, action.payload];
+      state.items = [...state.items].sort((a, b) => b.created - a.created);
+    },
+    [createTodoThunk.rejected]: (state, action) => {
+      state.loading = false;
+      state.item = [];
       state.error = action.error.message;
     },
   },

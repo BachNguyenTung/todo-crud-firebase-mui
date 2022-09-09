@@ -1,5 +1,6 @@
 import React from "react";
 import { todoActions } from "../slice/todoSlice";
+import { createTodoThunk } from "../slice/todoSlice";
 import { db } from "../firebase";
 import { useDispatch } from "react-redux";
 import { Formik, Form, Field, ErrorMessage } from "formik";
@@ -44,7 +45,6 @@ const StyledErrorMessage = styled(ErrorMessage)({
 });
 
 const TodoForm = () => {
-  const { createTodo } = todoActions;
   const dispatch = useDispatch();
 
   const validateSchema = yup.object().shape({
@@ -56,19 +56,7 @@ const TodoForm = () => {
   });
 
   const onSubmit = async ({ name }, { resetForm }) => {
-    try {
-      let created = Math.floor(new Date().valueOf() / 1000);
-      let finished = false;
-      const docRef = await db.collection("todos").add({
-        name,
-        created,
-        finished,
-      });
-      const newTodo = { id: docRef.id, name, finished, created };
-      dispatch(createTodo(newTodo));
-    } catch (error) {
-      alert(error.message);
-    }
+    dispatch(createTodoThunk({ name }));
     resetForm();
   };
 
