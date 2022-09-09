@@ -1,8 +1,7 @@
-import React from "react";
-import { todoActions } from "../slice/todoSlice";
+import React, { useState } from "react";
+import { todoActions, updateTodoThunk } from "../slice/todoSlice";
 import { db } from "../firebase";
 import { useDispatch } from "react-redux";
-import { useState } from "react";
 import { Box, ButtonGroup, IconButton, styled, InputBase } from "@mui/material";
 import {
   Delete,
@@ -37,14 +36,16 @@ const Todo = ({ item }) => {
     dispatch(updateTodo({ id: item.id, finished: false })); // set finishedfalse if edit attempts
   };
 
-  const handleApply = async () => {
-    const docRef = db.collection("todos").doc(item.id);
-    try {
-      await docRef.update({ name: newName, finished: item.finished });
-    } catch (error) {
-      alert(error.message);
-    }
-    dispatch(updateTodo({ id: item.id, newName }));
+  const handleApply = () => {
+    const created = Math.floor(new Date().valueOf() / 1000);
+    dispatch(
+      updateTodoThunk({
+        id: item.id,
+        name: newName,
+        finished: item.finished,
+        created,
+      })
+    );
     setIsDisabled(!isDisabled);
   };
 
