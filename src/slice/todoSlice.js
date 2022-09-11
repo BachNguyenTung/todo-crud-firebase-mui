@@ -29,8 +29,7 @@ const todoSlice = createSlice({
   initialState,
   reducers: {
     createTodo: (state, action) => {
-      state.items = [...state.items, action.payload];
-      // state.items.push(action.payload);
+      state.items.push(action.payload);
       state.items.sort((a, b) => b.created - a.created);
     },
     updateTodo: (state, action) => {
@@ -45,9 +44,7 @@ const todoSlice = createSlice({
       }
     },
     deleteTodo: (state, action) => {
-      state.items = [...state.items].filter(
-        (item) => item.id !== action.payload
-      );
+      state.items = state.items.filter((item) => item.id !== action.payload);
     },
   },
   extraReducers: {
