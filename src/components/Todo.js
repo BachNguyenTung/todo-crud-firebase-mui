@@ -34,10 +34,11 @@ const Todo = ({ item }) => {
   const handleChange = (e) => {
     e.preventDefault();
     setNewName(e.target.value);
-    dispatch(updateTodo({ id: item.id, finished: false })); // set finishedfalse if edit attempts
   };
 
+  //TODO: Input check errors
   const handleApply = async () => {
+    if (!newName) return;
     const docRef = db.collection("todos").doc(item.id);
     try {
       await docRef.update({ name: newName, finished: item.finished });
@@ -71,6 +72,7 @@ const Todo = ({ item }) => {
   const handleEdit = () => {
     setIsDisabled(!isDisabled);
     cbRef.focus();
+    dispatch(updateTodo({ id: item.id, finished: false })); // set finishedfalse if edit attempts
   };
 
   const callbackRef = (element) => {
@@ -109,6 +111,14 @@ const Todo = ({ item }) => {
           fontSize: "20px",
           textDecoration: item.finished && "line-through",
           border: "none",
+          cursor: "default",
+          "& .MuiInputBase-readOnly": {
+            cursor: "default",
+          },
+          "& .MuiInputBase-input": {
+            padding: "0.4rem 0.6rem",
+            border: !isDisabled && "1px solid red",
+          },
           //styled disabled input
           // "& .MuiInputBase-input.Mui-disabled": {
           //   WebkitTextFillColor: "rgba(0, 0, 0, 0.87)",
@@ -130,15 +140,23 @@ const Todo = ({ item }) => {
             <Done sx={{ fontSize: "2rem" }} />
           )}
         </StyledIconButton>
-        <StyledIconButton sx={{ color: "#94faa5" }} onClick={handleFinished}>
+        <StyledIconButton
+          sx={{ color: "#94faa5" }}
+          onClick={handleFinished}
+          disabled={!isDisabled}
+        >
           {item.finished ? (
             <CheckCircleOutlined sx={{ fontSize: "2rem" }} />
           ) : (
             <CircleOutlined sx={{ fontSize: "2rem" }} />
           )}
         </StyledIconButton>
-        <StyledIconButton onClick={handleDelete}>
-          <Delete sx={{ color: "red", fontSize: "2rem" }} />
+        <StyledIconButton
+          sx={{ color: "red" }}
+          onClick={handleDelete}
+          disabled={!isDisabled}
+        >
+          <Delete sx={{ fontSize: "2rem" }} />
         </StyledIconButton>
       </ButtonGroup>
     </Box>
